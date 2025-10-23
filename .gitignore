@@ -26,3 +26,20 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+# Thêm cho Vite, React, TypeScript, OS
+public/assets/
+storage/app/public
+storage/framework/
+storage/logs/
+.env.*
+*.log
+*.sqlite
+*.sqlite3
+*.bak
+*.tmp
+coverage/
+.vite/
+Thumbs.db
+*.swp
+*.swo
+*.tsbuildinfo
