@@ -1,13 +1,14 @@
 import React from 'react';
 import Navibar from '@/components/Navibar';
-import Menu from '@/components/Menu';
 import Footer from '@/components/Footer';
+import AdminBreadcrumb from '@/components/AdminBreadcrumb';
 
 export default function AdminDashboard() {
     return (
         <>
             <Navibar />
-            <Menu />
+            <AdminBreadcrumb items={[{ label: 'Admin Dashboard' }]} />
+
             <div className="container mx-auto py-10">
                 <h1 className="text-3xl font-bold text-blue-700 mb-8">Quản lý hệ thống</h1>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

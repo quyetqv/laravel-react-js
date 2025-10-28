@@ -1,13 +1,13 @@
 import React from 'react';
 import Navibar from '@/components/Navibar';
-import Menu from '@/components/Menu';
 import Footer from '@/components/Footer';
+import AdminBreadcrumb from '@/components/AdminBreadcrumb';
 
 export default function AdminReports() {
     return (
         <>
             <Navibar />
-            <Menu />
+            <AdminBreadcrumb items={[{ label: 'Báo cáo' }]} />
             <div className="container mx-auto py-10">
                 <h1 className="text-2xl font-bold text-yellow-700 mb-6">Thống kê & Báo cáo</h1>
                 <div className="bg-white rounded-xl shadow p-6">

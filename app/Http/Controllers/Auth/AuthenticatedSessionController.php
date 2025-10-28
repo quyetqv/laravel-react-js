@@ -33,6 +33,12 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        $user = $request->user();
+        // Nếu là admin thì chuyển hướng về admin dashboard
+        if ($user && (($user->email === 'admin@example.com') || ($user->isAdmin ?? false))) {
+            return redirect()->intended(route('admin.dashboard'));
+        }
+
         return redirect()->intended(route('dashboard', absolute: false));
     }
 

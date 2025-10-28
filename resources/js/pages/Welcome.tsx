@@ -42,14 +42,16 @@ export default function Welcome({ products }: ProductsPageProps) {
                         <div key={product.id} className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 flex flex-col">
                             <div className="relative h-48 w-full overflow-hidden rounded-t-xl bg-gray-100 flex items-center justify-center">
                                 <img
-                                    src={product.image_url || 'https://source.unsplash.com/400x400/?product'}
+                                    src={product.image_url || '/storage/products/default.png' }
                                     alt={product.title}
                                     className="object-cover h-full w-full group-hover:scale-105 transition-transform duration-300"
                                 />
                                 <span className="absolute top-2 left-2 bg-pink-500 text-white text-xs px-2 py-1 rounded shadow">Mới</span>
                             </div>
                             <div className="p-4 flex-1 flex flex-col justify-between">
-                                <h2 className="text-lg font-bold text-gray-800 mb-2 truncate" title={product.title}>{product.title}</h2>
+                                <Link href={`/products/${product.id}`} className="no-underline hover:underline">
+                                    <h2 className="text-lg font-bold text-gray-800 mb-2 truncate" title={product.title}>{product.title}</h2>
+                                </Link>
                                 <p className="text-sm text-gray-500 mb-3 line-clamp-2">{product.description || 'Sản phẩm chất lượng, giá tốt, giao hàng toàn quốc.'}</p>
                                 <div className="flex items-center justify-between mt-auto">
                                     <span className="text-xl font-bold text-pink-600">
