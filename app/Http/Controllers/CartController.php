@@ -76,14 +76,72 @@ class CartController extends Controller
         return Inertia::render('cart/CheckoutForm');
     }
 
-    public function checkout()
+    public function checkout(Request $request)
     {
-        // Logic for checkout process
-        // This could involve creating an order, processing payment, etc.
+        $cart = session()->get('cart', []);
+        if (empty($cart)) {
+            return back()->with('error', 'Giỏ hàng trống!');
+        }
 
-        // For now, we'll just clear the cart
+        $user = $request->user();
+        $productIds = array_keys($cart);
+        $products = \App\Models\Product::whereIn('id', $productIds)->get();
+
+        $totalCents = 0;
+        foreach ($products as $product) {
+            $totalCents += $product->price_cents * ($cart[$product->id] ?? 1);
+        }
+
+        // Validate thông tin khách hàng
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:32',
+            'email' => 'required|email|max:255',
+            'address' => 'required|string|max:255',
+            'payment_method' => 'required|string',
+        ]);
+
+        // Tạo order
+        $order = \App\Models\Order::create([
+            'user_id' => $user ? $user->id : null,
+            'order_number' => 'ORD' . time() . rand(100, 999),
+            'total_cents' => $totalCents,
+            'status' => 'pending',
+            'payment_status' => strtoupper($data['payment_method'] ?? 'COD'),
+            'placed_at' => now(),
+            'customer_name' => $data['name'],
+            'customer_phone' => $data['phone'],
+            'customer_email' => $data['email'],
+            'customer_address' => $data['address'],
+            'payment_method' => $data['payment_method'],
+        ]);
+
+        // Tạo order_items
+        foreach ($products as $product) {
+            \App\Models\OrderItem::create([
+                'order_id' => $order->id,
+                'product_id' => $product->id,
+                'quantity' => $cart[$product->id] ?? 1,
+                'price_cents' => $product->price_cents,
+                'meta' => json_encode([
+                    'title' => $product->title,
+                ]),
+            ]);
+        }
+
         session()->forget('cart');
 
-        return back()->with('success', 'Thanh toán thành công!');
+        return back()->with('success', 'Đặt hàng thành công! Đơn hàng của bạn đã được ghi nhận.');
+    }
+
+    // Update cart quantities
+    public function updateCart(Request $request)
+    {
+        $data = $request->validate([
+            'cart' => 'required|array',
+            'cart.*' => 'integer|min:1',
+        ]);
+        session(['cart' => $data['cart']]);
+        return back()->with('success', 'Cập nhật giỏ hàng thành công!');
     }
 }

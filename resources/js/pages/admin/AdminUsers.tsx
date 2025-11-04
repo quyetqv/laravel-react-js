@@ -1,12 +1,10 @@
 import React from 'react';
-import Navibar from '@/components/Navibar';
-import Footer from '@/components/Footer';
 import AdminBreadcrumb from '@/components/AdminBreadcrumb';
+import AdminLayout from '@/layouts/AdminLayout';
 
 export default function AdminUsers() {
     return (
-        <>
-            <Navibar />
+        <AdminLayout>
             <AdminBreadcrumb items={[{ label: 'Quản lý người dùng' }]} />
 
             <div className="container mx-auto py-10">
@@ -50,7 +48,6 @@ export default function AdminUsers() {
                     </table>
                 </div>
             </div>
-            <Footer />
-        </>
+        </AdminLayout>
     );
 }

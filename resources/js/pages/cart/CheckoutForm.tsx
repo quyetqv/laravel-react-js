@@ -25,22 +25,43 @@ import Breadcrumb from '@/components/Breadcrumb';
 //     cart: Record<number, number>; // product_id => quantity
 // }
 
-export default function CartList() {
-    // function removeFromCart(productId: number) {
-    //     // Logic to remove the product from the cart
-    //     console.log(`Xóa sản phẩm ${productId} khỏi giỏ hàng`);
-    //     // You can implement the actual removal logic here, e.g., making an API call
-    //     router.post(`/cart/remove/${productId}`);
-    // }
+import { useState } from 'react';
+import { router } from '@inertiajs/react';
 
-    // function updateCart() {
-    //     // Logic to update the cart
-    //     console.log('Cập nhật giỏ hàng');
-    //     // You can implement the actual update logic here, e.g., making an API call
-    // }
+export default function CheckoutForm() {
+    const [success, setSuccess] = useState(false);
+    const [form, setForm] = useState({
+        name: '',
+        phone: '',
+        email: '',
+        address: '',
+        payment_method: 'cod',
+    });
+    type FormErrors = {
+        name?: string;
+        phone?: string;
+        email?: string;
+        address?: string;
+        payment_method?: string;
+        [key: string]: string | undefined;
+    };
+    const [errors, setErrors] = useState<FormErrors>({});
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+        setForm({ ...form, [e.target.name]: e.target.value });
+    };
+
+    const handleCheckout = (e: React.FormEvent) => {
+        e.preventDefault();
+        setErrors({});
+        router.post('/cart/checkout', form, {
+            onSuccess: () => setSuccess(true),
+            onError: (err) => setErrors(err),
+        });
+    };
 
     return (
-         <>
+        <>
             <Head title="Checkout" />
             <Navibar />
             <Menu />
@@ -51,26 +72,44 @@ export default function CartList() {
                 <div className="max-w-3xl mx-auto py-10">
                     <Head title="Tiến hành thanh toán đơn hàng" />
                     <h1 className="text-3xl font-bold mb-4">Thanh toán</h1>
-                    <div className="mb-4 text-gray-700">Màn hình thanh toán.</div>
-
-                    {/* <div className="bg-white shadow rounded-lg p-6">
-                        <ul>
-                            {items.map(item => (
-                                <li key={item.id} className="border-b py-4">
-                                    <div className="flex justify-between">
-                                        <span className="font-semibold">{item.title}</span>
-                                        <span className="text-gray-600">{item.price} đ</span>
-                                    </div>
-                                    <div className="text-sm text-gray-500">Số lượng: {cart[item.id]}</div>
-                                    <Button onClick={() => removeFromCart(item.id)} className="mt-2 bg-pink-600 text-white px-4 py-2 rounded hover:bg-pink-700">Xóa khỏi giỏ hàng</Button>
-                                </li>
-                            ))}
-                        </ul>
-                        <div className="mt-4 flex justify-end">
-                            <Button onClick={updateCart} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Cập nhật giỏ hàng</Button>
-                            <Button onClick={() => router.post('/cart/checkout')} className="ml-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Thanh toán</Button>
-                        </div>
-                    </div> */}
+                    {success ? (
+                        <div className="mb-4 text-green-700 font-semibold bg-green-100 p-4 rounded">Đặt hàng thành công! Đơn hàng của bạn đã được ghi nhận.</div>
+                    ) : (
+                        <form onSubmit={handleCheckout} className="space-y-4">
+                            <div>
+                                <label className="block font-medium">Họ tên người đặt hàng</label>
+                                <input name="name" value={form.name} onChange={handleChange} className="border rounded px-3 py-2 w-full" required />
+                                {errors.name && <div className="text-red-500 text-sm">{errors.name}</div>}
+                            </div>
+                            <div>
+                                <label className="block font-medium">Số điện thoại</label>
+                                <input name="phone" value={form.phone} onChange={handleChange} className="border rounded px-3 py-2 w-full" required />
+                                {errors.phone && <div className="text-red-500 text-sm">{errors.phone}</div>}
+                            </div>
+                            <div>
+                                <label className="block font-medium">Email</label>
+                                <input name="email" type="email" value={form.email} onChange={handleChange} className="border rounded px-3 py-2 w-full" required />
+                                {errors.email && <div className="text-red-500 text-sm">{errors.email}</div>}
+                            </div>
+                            <div>
+                                <label className="block font-medium">Địa chỉ nhận hàng</label>
+                                <textarea name="address" value={form.address} onChange={handleChange} className="border rounded px-3 py-2 w-full" required />
+                                {errors.address && <div className="text-red-500 text-sm">{errors.address}</div>}
+                            </div>
+                            <div>
+                                <label className="block font-medium">Hình thức thanh toán</label>
+                                <select name="payment_method" value={form.payment_method} onChange={handleChange} className="border rounded px-3 py-2 w-full" disabled>
+                                    <option value="cod">Thanh toán khi nhận hàng (COD)</option>
+                                </select>
+                            </div>
+                            <button
+                                type="submit"
+                                className="bg-pink-600 hover:bg-pink-700 text-white px-6 py-3 rounded font-bold shadow"
+                            >
+                                Đặt hàng
+                            </button>
+                        </form>
+                    )}
                 </div>
             </div>
             <Footer />

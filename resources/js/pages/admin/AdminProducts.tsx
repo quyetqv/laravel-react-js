@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import Navibar from '@/components/Navibar';
-import Footer from '@/components/Footer';
 import AdminBreadcrumb from '@/components/AdminBreadcrumb';
 
 import { usePage, router } from '@inertiajs/react';
+import AdminLayout from '@/layouts/AdminLayout';
 
 type Product = {
     id: number;
@@ -37,8 +36,7 @@ export default function AdminProducts() {
     };
 
     return (
-        <>
-            <Navibar />
+        <AdminLayout>
             <AdminBreadcrumb items={[{ label: 'Quản lý sản phẩm' }]} />
             <div className="container mx-auto py-10">
                 <h1 className="text-2xl font-bold text-pink-700 mb-6">Quản lý sản phẩm</h1>
@@ -107,7 +105,6 @@ export default function AdminProducts() {
                     </div>
                 </div>
             </div>
-            <Footer />
-        </>
+        </AdminLayout>
     );
 }

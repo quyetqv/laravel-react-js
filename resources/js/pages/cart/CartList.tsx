@@ -6,6 +6,7 @@ import Menu from '@/components/Menu';
 import Navibar from '@/components/Navibar';
 import Breadcrumb from '@/components/Breadcrumb';
 import { Button } from '@headlessui/react';
+import { Input } from '@/components/ui/input';
 
 interface CartListProps {
     items: Array<{
@@ -38,6 +39,7 @@ export default function CartList({ items, cart }: CartListProps) {
         // Logic to update the cart
         console.log('Cập nhật giỏ hàng');
         // You can implement the actual update logic here, e.g., making an API call
+        router.post('/cart/update', { cart });
     }
 
     return (
@@ -63,6 +65,7 @@ export default function CartList({ items, cart }: CartListProps) {
                                         <span className="text-gray-600">{item.price} đ</span>
                                     </div>
                                     <div className="text-sm text-gray-500">Số lượng: {cart[item.id]}</div>
+                                    <Input type="number" min="1" defaultValue={cart[item.id]} className="mt-2 w-20" />
                                     <Button onClick={() => removeFromCart(item.id)} className="mt-2 bg-pink-600 text-white px-4 py-2 rounded hover:bg-pink-700">Xóa khỏi giỏ hàng</Button>
                                 </li>
                             ))}

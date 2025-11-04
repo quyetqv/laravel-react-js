@@ -20,6 +20,11 @@ class Order extends Model
         'shipping_address_id',
         'billing_address_id',
         'placed_at',
+        'customer_name',
+        'customer_phone',
+        'customer_email',
+        'customer_address',
+        'payment_method',
     ];
 
     protected $casts = [
@@ -34,5 +39,10 @@ class Order extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function shipping()
+    {
+        return $this->hasOne(Shipping::class);
     }
 }

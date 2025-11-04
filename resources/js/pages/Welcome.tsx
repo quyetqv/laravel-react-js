@@ -34,7 +34,7 @@ export default function Welcome({ products }: ProductsPageProps) {
             <Navibar />
             <Menu />
             <Banner />
-            <div className="container mx-auto py-6">
+            <div className="container mx-auto py-6 px-4">
                 <Breadcrumb items={[{ name: 'Trang chủ', href: '/' }, { name: 'Sản phẩm' }]} />
                 <h1 className="text-3xl font-bold text-pink-600 mb-6">Danh sách sản phẩm</h1>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
@@ -70,24 +70,59 @@ export default function Welcome({ products }: ProductsPageProps) {
                         </div>
                     ))}
                 </div>
-                <div className="flex justify-center mt-10 space-x-2">
-                    {products.prev_page_url && (
+                <div className="flex justify-center mt-10 space-x-1 flex-wrap">
+                    {/* First page */}
+                    {products.current_page > 3 && (
                         <Link
-                            href={products.prev_page_url}
-                            className="px-5 py-2 bg-white border border-pink-300 text-pink-600 rounded-lg shadow hover:bg-pink-50 font-semibold"
+                            href={`?page=1`}
+                            className="px-3 py-2 bg-white border border-pink-300 text-pink-600 rounded-lg shadow hover:bg-pink-50 font-semibold"
                         >
-                            ← Trang trước
+                            1
                         </Link>
                     )}
-                    <span className="px-5 py-2 bg-pink-100 text-pink-700 rounded-lg font-bold shadow">
-                        Trang {products.current_page} / {products.last_page}
+                    {/* Dấu ... nếu cần */}
+                    {products.current_page > 4 && (
+                        <span className="px-2 py-2">...</span>
+                    )}
+                    {/* 2 trang trước current */}
+                    {Array.from({length: 2}, (_, i) => products.current_page - 2 + i)
+                        .filter(page => page > 1 && page < products.current_page)
+                        .map(page => (
+                            <Link
+                                key={page}
+                                href={`?page=${page}`}
+                                className="px-3 py-2 bg-white border border-pink-300 text-pink-600 rounded-lg shadow hover:bg-pink-50 font-semibold"
+                            >
+                                {page}
+                            </Link>
+                        ))}
+                    {/* Current page */}
+                    <span className="px-3 py-2 bg-pink-100 text-pink-700 rounded-lg font-bold shadow border border-pink-300">
+                        {products.current_page}
                     </span>
-                    {products.next_page_url && (
+                    {/* 2 trang sau current */}
+                    {Array.from({length: 2}, (_, i) => products.current_page + 1 + i)
+                        .filter(page => page > products.current_page && page < products.last_page)
+                        .map(page => (
+                            <Link
+                                key={page}
+                                href={`?page=${page}`}
+                                className="px-3 py-2 bg-white border border-pink-300 text-pink-600 rounded-lg shadow hover:bg-pink-50 font-semibold"
+                            >
+                                {page}
+                            </Link>
+                        ))}
+                    {/* Dấu ... nếu cần */}
+                    {products.current_page < products.last_page - 3 && (
+                        <span className="px-2 py-2">...</span>
+                    )}
+                    {/* Last page */}
+                    {products.current_page < products.last_page - 2 && (
                         <Link
-                            href={products.next_page_url}
-                            className="px-5 py-2 bg-white border border-pink-300 text-pink-600 rounded-lg shadow hover:bg-pink-50 font-semibold"
+                            href={`?page=${products.last_page}`}
+                            className="px-3 py-2 bg-white border border-pink-300 text-pink-600 rounded-lg shadow hover:bg-pink-50 font-semibold"
                         >
-                            Trang sau →
+                            {products.last_page}
                         </Link>
                     )}
                 </div>

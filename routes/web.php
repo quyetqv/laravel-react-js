@@ -1,4 +1,7 @@
+
 <?php
+
+use App\Http\Controllers\AdminOrderController;
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
@@ -9,6 +12,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\AdminProductController;
+use App\Http\Controllers\AdminShippingController;
 
 
 Route::get('/', [ProductController::class, 'index']);
@@ -33,6 +37,7 @@ Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add')
 Route::post('/cart/remove/{productId}', [CartController::class, 'removeFromCart'])->name('cart.remove');
 Route::get(('/cart/checkout'), [CartController::class, 'checkoutForm'])->name('cart.checkout.form');
 Route::post('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+Route::post('/cart/update', [CartController::class, 'updateCart'])->name('cart.update');
 
 
 // Middleware kiểm tra admin
@@ -44,6 +49,13 @@ Route::middleware($adminMiddleware)->prefix('admin')->group(function () {
     Route::get('/products', [AdminProductController::class, 'index'])->name('admin.products');
     Route::get('/users', fn() => Inertia::render('admin/AdminUsers'))->name('admin.users');
     Route::get('/reports', fn() => Inertia::render('admin/AdminReports'))->name('admin.reports');
+
+    // Orders
+    Route::get('/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
+    Route::get('/orders/{order}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
+
+    // Shippings
+    Route::get('/shippings', [AdminShippingController::class, 'index'])->name('admin.shippings');
 });
 
 Route::middleware('auth')->group(function () {

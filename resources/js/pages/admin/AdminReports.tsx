@@ -1,12 +1,10 @@
 import React from 'react';
-import Navibar from '@/components/Navibar';
-import Footer from '@/components/Footer';
 import AdminBreadcrumb from '@/components/AdminBreadcrumb';
+import AdminLayout from '@/layouts/AdminLayout';
 
 export default function AdminReports() {
     return (
-        <>
-            <Navibar />
+        <AdminLayout>
             <AdminBreadcrumb items={[{ label: 'Báo cáo' }]} />
             <div className="container mx-auto py-10">
                 <h1 className="text-2xl font-bold text-yellow-700 mb-6">Thống kê & Báo cáo</h1>
@@ -47,7 +45,6 @@ export default function AdminReports() {
                     </table>
                 </div>
             </div>
-            <Footer />
-        </>
+        </AdminLayout>
     );
 }

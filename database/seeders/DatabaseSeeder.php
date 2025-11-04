@@ -44,5 +44,13 @@ class DatabaseSeeder extends Seeder
         } else {
             $this->command->info('Skipping heavy order seeding. Set ORDER_SEED_CONFIRM=true to enable.');
         }
+
+        // User::factory(10)->create();
+
+        $this->call([
+            AdminUserSeeder::class,
+            ShippingSeeder::class,
+            ShippingDemoSeeder::class,
+        ]);
     }
 }
