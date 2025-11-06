@@ -13,6 +13,11 @@ interface Order {
     user_id?: number;
 }
 
+interface StatusOption {
+    value: string;
+    label: string;
+}
+
 interface PageProps {
     orders: {
         data: Order[];
@@ -28,11 +33,12 @@ interface PageProps {
         to?: string;
         perPage?: string;
     };
+    statusOptions: StatusOption[];
     [key: string]: unknown;
 }
 
 export default function AdminOrders() {
-    const { orders, filters } = usePage<PageProps>().props;
+    const { orders, filters, statusOptions } = usePage<PageProps>().props;
     const [status, setStatus] = useState(filters.status || '');
     const [from, setFrom] = useState(filters.from || '');
     const [to, setTo] = useState(filters.to || '');
@@ -41,6 +47,27 @@ export default function AdminOrders() {
     const handleFilter = (e: React.FormEvent) => {
         e.preventDefault();
         router.get('/admin/orders', { status, from, to, perPage }, { preserveState: true });
+    };
+
+    const getStatusBadge = (statusValue: string) => {
+        const option = statusOptions.find(opt => opt.value === statusValue);
+        if (!option) return statusValue;
+
+        // Simplified badge for table view
+        const colorMap: Record<string, string> = {
+            'pending': 'bg-yellow-100 text-yellow-800',
+            'processing': 'bg-blue-100 text-blue-800',
+            'completed': 'bg-green-100 text-green-800',
+            'cancelled': 'bg-red-100 text-red-800',
+        };
+
+        const colorClass = colorMap[statusValue] || 'bg-gray-100 text-gray-800';
+
+        return (
+            <span className={`px-2 py-1 rounded text-xs font-semibold ${colorClass}`}>
+                {option.label}
+            </span>
+        );
     };
 
     return (
@@ -52,10 +79,9 @@ export default function AdminOrders() {
                     <form className="flex flex-wrap gap-4 mb-4 items-end" onSubmit={handleFilter}>
                         <select className="border px-3 py-2 rounded" value={status} onChange={e => setStatus(e.target.value)}>
                             <option value="">Tất cả trạng thái</option>
-                            <option value="pending">Chờ xử lý</option>
-                            <option value="processing">Đang xử lý</option>
-                            <option value="completed">Hoàn thành</option>
-                            <option value="cancelled">Đã hủy</option>
+                            {statusOptions.map(option => (
+                                <option key={option.value} value={option.value}>{option.label}</option>
+                            ))}
                         </select>
                         <input type="date" className="border px-3 py-2 rounded" value={from} onChange={e => setFrom(e.target.value)} placeholder="Từ ngày" />
                         <input type="date" className="border px-3 py-2 rounded" value={to} onChange={e => setTo(e.target.value)} placeholder="Đến ngày" />
@@ -87,7 +113,7 @@ export default function AdminOrders() {
                                     <td className="p-2">{order.order_number}</td>
                                     <td className="p-2">{order.user_id || 'Khách vãng lai'}</td>
                                     <td className="p-2">{(order.total_cents / 100).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
-                                    <td className="p-2">{order.status}</td>
+                                    <td className="p-2">{getStatusBadge(order.status)}</td>
                                     <td className="p-2">{order.payment_status}</td>
                                     <td className="p-2">{order.placed_at ? new Date(order.placed_at).toLocaleString('vi-VN') : ''}</td>
                                     <td className="p-2">

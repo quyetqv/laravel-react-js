@@ -41,6 +41,11 @@ class Order extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function shippings(): HasMany
+    {
+        return $this->hasMany(Shipping::class);
+    }
+
     public function shipping()
     {
         return $this->hasOne(Shipping::class);

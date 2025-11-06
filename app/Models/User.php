@@ -22,6 +22,7 @@ class User extends Authenticatable
         'email',
         'password',
         'is_admin',
+        'role',
     ];
 
     /**
@@ -44,4 +45,14 @@ class User extends Authenticatable
         'password' => 'hashed',
         'is_admin' => 'boolean',
     ];
+
+    public function staff()
+    {
+        return $this->hasOne(Staff::class);
+    }
+
+    public function isStaff()
+    {
+        return $this->role === 'staff' && $this->staff()->exists();
+    }
 }

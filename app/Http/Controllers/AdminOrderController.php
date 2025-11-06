@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Helpers\StatusHelper;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -29,15 +30,21 @@ class AdminOrderController extends Controller
 
         return Inertia::render('admin/AdminOrders', [
             'orders' => $orders,
-            'filters' => $request->only(['status', 'from', 'to', 'perPage'])
+            'filters' => $request->only(['status', 'from', 'to', 'perPage']),
+            'statusOptions' => StatusHelper::getOptions('order_status'),
         ]);
     }
 
     public function show(Order $order)
     {
-        $order->load('items.product', 'user');
+        $order->load('items.product', 'user', 'shippings.shippingProvider', 'shippings.staff.user');
         return Inertia::render('admin/AdminOrderDetail', [
-            'order' => $order
+            'order' => $order,
+            'statusConfig' => [
+                'order' => StatusHelper::getAll('order_status'),
+                'payment' => StatusHelper::getAll('payment_status'),
+                'shipping' => StatusHelper::getAll('shipping_status'),
+            ],
         ]);
     }
 }

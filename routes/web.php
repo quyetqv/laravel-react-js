@@ -54,8 +54,24 @@ Route::middleware($adminMiddleware)->prefix('admin')->group(function () {
     Route::get('/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
     Route::get('/orders/{order}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
 
+    // Shipping creation from order
+    Route::get('/orders/{order}/shipping/data', [App\Http\Controllers\Admin\AdminShippingCreateController::class, 'create'])->name('admin.orders.shipping.data');
+    Route::post('/orders/{order}/shipping', [App\Http\Controllers\Admin\AdminShippingCreateController::class, 'store'])->name('admin.orders.shipping.store');
+    Route::post('/shipping/calculate-fee', [App\Http\Controllers\Admin\AdminShippingCreateController::class, 'calculateFee'])->name('admin.shipping.calculate-fee');
+
     // Shippings
     Route::get('/shippings', [AdminShippingController::class, 'index'])->name('admin.shippings');
+});
+
+// Staff routes
+Route::prefix('staff')->group(function () {
+    Route::get('/login', [App\Http\Controllers\Staff\StaffAuthController::class, 'showLogin'])->name('staff.login');
+    Route::post('/login', [App\Http\Controllers\Staff\StaffAuthController::class, 'login']);
+
+    Route::middleware('staff')->group(function () {
+        Route::get('/dashboard', [App\Http\Controllers\Staff\StaffDashboardController::class, 'index'])->name('staff.dashboard');
+        Route::post('/logout', [App\Http\Controllers\Staff\StaffAuthController::class, 'logout'])->name('staff.logout');
+    });
 });
 
 Route::middleware('auth')->group(function () {
